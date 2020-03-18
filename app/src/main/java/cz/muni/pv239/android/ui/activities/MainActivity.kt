@@ -1,4 +1,4 @@
-package cz.muni.pv239.android
+package cz.muni.pv239.android.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,7 @@ import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.ToolTipPopup
+import cz.muni.pv239.android.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -48,7 +49,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLoginSuccess() {
-
+        startActivity(
+            SetUpActivity.newIntent(
+                this
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
