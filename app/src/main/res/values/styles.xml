@@ -1,11 +1,34 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--        <item name="colorControlNormal">@color/edit_normal</item>-->
+<!--        <item name="colorSecondary">@color/colorAccent</item>-->
+<!--        <item name="colorSurface">@color/colorSurface</item>-->
+<!--        <item name="colorOnSurface">@color/colorOnSurface</item>-->
+<!--        <item name="colorOnBackground">@color/colorOnBackground</item>-->
+<!--        <item name="android:background">@color/background</item>-->
+
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorBlack</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorWhite</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
     </style>
+
+<!--    <style name="accent_button">-->
+<!--        <item name="android:backgroundTint">@color/colorAccent</item>-->
+<!--        <item name="android:textColor">@color/onAccent</item>-->
+<!--    </style>-->
+
 
 </resources>
