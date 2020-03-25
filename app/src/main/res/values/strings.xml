@@ -4,6 +4,7 @@
     <string name="fb_login_protocol_scheme">fb513827532612705</string>
     <string name="login_label">WannaPlay?</string>
     <string name="nick_name_header">Choose a nick name</string>
+    <string name="google_app_id">838115174907-ugvvp61c6ke85voohr04v63n0p03tfg6.apps.googleusercontent.com</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
