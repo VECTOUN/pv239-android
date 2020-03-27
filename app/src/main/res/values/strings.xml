@@ -5,9 +5,6 @@
     <string name="login_label">WannaPlay?</string>
     <string name="nick_name_header">Choose a nick name</string>
     <string name="google_app_id">838115174907-ugvvp61c6ke85voohr04v63n0p03tfg6.apps.googleusercontent.com</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nickname_edit_text_hint">Enter a nickname</string>
     <string name="confirm">Confirm</string>
 </resources>
