@@ -22,6 +22,10 @@ import kotlinx.android.synthetic.main.fragment_nick_name.*
 import kotlinx.android.synthetic.main.fragment_nick_name.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.widget.Button
+import cz.muni.pv239.android.ui.activities.UserActivity
+
+
 
 class NickNameFragment : Fragment() {
 
@@ -58,11 +62,14 @@ class NickNameFragment : Fragment() {
             }
         })
 
+
         compositeDisposable = CompositeDisposable()
 
         view.confirm_button.setOnClickListener {
             createUser()
         }
+
+
 
         return view
     }
