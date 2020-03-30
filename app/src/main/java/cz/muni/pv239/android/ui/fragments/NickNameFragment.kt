@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.fragment_nick_name.*
 import kotlinx.android.synthetic.main.fragment_nick_name.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import android.widget.Button
 import cz.muni.pv239.android.ui.activities.UserActivity
 
 
@@ -96,6 +95,14 @@ class NickNameFragment : Fragment() {
 
         Toast.makeText(activity?.applicationContext, "Created user with id: $id", Toast.LENGTH_LONG)
             .show()
+
+        context?.let {context ->
+            startActivity(
+                UserActivity.newIntent(context)
+            )
+        }
+
+
     }
 
     private fun createUserError(error: Throwable) {
