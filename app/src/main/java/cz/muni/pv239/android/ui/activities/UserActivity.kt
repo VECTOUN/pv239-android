@@ -7,8 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import cz.muni.pv239.android.R
-import cz.muni.pv239.android.ui.fragments.CreateGroupFragment
-import cz.muni.pv239.android.ui.fragments.FindGroupFragment
+import cz.muni.pv239.android.ui.fragments.EventsFragment
 import cz.muni.pv239.android.ui.fragments.GroupsFragment
 import cz.muni.pv239.android.ui.fragments.HomePageFragment
 
@@ -38,9 +37,7 @@ class UserActivity : AppCompatActivity() {
 
                 R.id.menu_groups -> {selectedFragment = GroupsFragment()}
 
-                R.id.menu_create -> {selectedFragment = CreateGroupFragment()}
-
-                R.id.menu_find -> {selectedFragment = FindGroupFragment()}
+                R.id.menu_events -> {selectedFragment = EventsFragment()}
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_navigation_container, selectedFragment)

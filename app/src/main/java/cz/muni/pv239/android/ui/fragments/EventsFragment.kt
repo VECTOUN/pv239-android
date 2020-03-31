@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import cz.muni.pv239.android.R
 
-class CreateGroupFragment : Fragment(){
+class EventsFragment : Fragment(){
 
     companion object {
         @JvmStatic
-        fun newInstance() = CreateGroupFragment()
+        fun newInstance() = EventsFragment()
     }
 
     override fun onCreateView(
@@ -19,6 +19,6 @@ class CreateGroupFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_create_group, container, false)
+        return inflater.inflate(R.layout.fragment_events, container, false)
     }
 }

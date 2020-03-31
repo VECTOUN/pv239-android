@@ -8,7 +8,7 @@
     <string name="nickname_edit_text_hint">Enter a nickname</string>
     <string name="confirm">Confirm</string>
     <string name="home">Home</string>
-    <string name="find_group">Find group</string>
-    <string name="create_group">Create group</string>
-    <string name="my_group">Groups</string>
+    <string name="groups">Groups</string>
+    <string name="events">Events</string>
+
 </resources>
