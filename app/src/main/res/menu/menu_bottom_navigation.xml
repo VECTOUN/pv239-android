@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/home"
+        app:showAsAction="withText"/>
+    <item android:id="@+id/menu_groups"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:title="@string/groups"
+        app:showAsAction="withText"/>
+    <item android:id="@+id/menu_events"
+        android:icon="@drawable/ic_event_black_24dp"
+        android:title="@string/events"
+        app:showAsAction="withText"/>
+</menu>

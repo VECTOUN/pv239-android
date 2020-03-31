@@ -31,7 +31,7 @@ class SetUpActivity : AppCompatActivity() {
             .build().create(UserRepository::class.java)
     }
 
-    private val TAG = "SetUpActivity";
+    private val TAG = "SetUpActivity"
 
     companion object {
         fun newIntent(context: Context) = Intent(context, SetUpActivity::class.java)
@@ -71,6 +71,13 @@ class SetUpActivity : AppCompatActivity() {
         if (userExists) {
             Toast.makeText(applicationContext, "User already exists", Toast.LENGTH_LONG)
                 .show()
+
+            startActivity(
+                UserActivity.newIntent(
+                    this
+                )
+            )
+
         } else {
             showNickSelectFragment()
         }
