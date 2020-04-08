@@ -19,4 +19,5 @@
     <color name="colorSecondary">#69F0AE</color>
     <color name="colorError">#CF6679</color>
     <color name="colorOnError">#000000</color>
+    <color name="dialogColor">#FF303030</color>
 </resources>

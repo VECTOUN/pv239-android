@@ -10,5 +10,9 @@
     <string name="home">Home</string>
     <string name="groups">Groups</string>
     <string name="events">Events</string>
+    <string name="create_group">Create group</string>
+    <string name="group_name_edit_hint">Name your group</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

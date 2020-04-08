@@ -14,7 +14,6 @@ import cz.muni.pv239.android.ui.fragments.HomePageFragment
 
 class UserActivity : AppCompatActivity() {
 
-    private val TAG = "HomeActivity"
 
     companion object {
         fun newIntent(context: Context) = Intent(context, UserActivity::class.java)
