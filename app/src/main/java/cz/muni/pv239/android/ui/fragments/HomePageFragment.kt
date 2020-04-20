@@ -60,7 +60,6 @@ class HomePageFragment : Fragment() {
                 }
             }
         )
-
     }
 
     override fun onCreateView(
@@ -86,7 +85,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Perun e-sports")
             ))
@@ -96,7 +95,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Group 1")
             ))
@@ -106,7 +105,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Perun e-sports")
             ))
@@ -116,7 +115,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Group 2")
             ))
@@ -126,7 +125,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Perun e-sports")
             ))
@@ -136,7 +135,7 @@ class HomePageFragment : Fragment() {
                 description = "",
                 capacity = null,
                 dateTime = Date(),
-                owner = User(nick = "Vectoun"),
+                owner = User(id = null,nick = "Vectoun"),
                 participants = listOf(),
                 party = Party(id = 2, name = "Tyckouni")
             ))

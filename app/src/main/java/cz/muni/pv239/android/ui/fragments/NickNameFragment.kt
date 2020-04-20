@@ -84,7 +84,7 @@ class NickNameFragment : Fragment() {
         val nick = nick_name_edit.text.toString().trim()
 
         compositeDisposable?.add(
-            userRepository.createUser(User(nick))
+            userRepository.createUser(User(null, nick))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::createUserSuccess, this::createUserError))
