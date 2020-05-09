@@ -22,4 +22,7 @@ interface UserRepository {
 
     @GET("user/{id}/member-parties")
     fun getMemberParties(@Path("id") id : Long?) : Observable<List<Party>>
+
+    @GET("user/{id}/parties")
+    fun getParties(@Path("id") id : Long?) : Observable<List<Party>>
 }

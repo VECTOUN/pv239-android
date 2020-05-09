@@ -12,3 +12,8 @@ fun Long.toPresentableTime(): String {
     val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     return dateFormat.format(this)
 }
+
+fun Long.toISO(): String {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
+    return dateFormat.format(this)
+}

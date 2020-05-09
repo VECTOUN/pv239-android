@@ -16,6 +16,7 @@ import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.EventRepository
 import cz.muni.pv239.android.ui.adapters.EventAdapter
+import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -31,6 +32,7 @@ class HomePageFragment : Fragment() {
 
     private val adapter = EventAdapter()
     private var compositeDisposable: CompositeDisposable? = null
+    private val prefManager: PrefManager? by lazy { PrefManager(context) }
     private val eventRepository: EventRepository by lazy {
         Retrofit.Builder()
             .client(getHttpClient(activity?.applicationContext))
@@ -69,7 +71,7 @@ class HomePageFragment : Fragment() {
     ): View? {
 
         compositeDisposable?.add(
-            eventRepository.getFutureEvents()
+            eventRepository.getFutureEvents(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::loadEventsSuccess, this::loadEventsError)
@@ -78,75 +80,13 @@ class HomePageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_home_page, container, false).apply {
             recycler_view.layoutManager = LinearLayoutManager(context)
 
-            val events = mutableListOf<Event>()
-            events.add(Event(
-                id=1,
-                name = "League of legends",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Perun e-sports")
-            ))
-            events.add(Event(
-                id=1,
-                name = "CS:GO",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Group 1")
-            ))
-            events.add(Event(
-                id=1,
-                name = "League of legends",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Perun e-sports")
-            ))
-            events.add(Event(
-                id=1,
-                name = "CS:GO",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Group 2")
-            ))
-            events.add(Event(
-                id=1,
-                name = "League of legends",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Perun e-sports")
-            ))
-            events.add(Event(
-                id=1,
-                name = "CS:GO",
-                description = "",
-                capacity = null,
-                dateTime = Date(),
-                owner = User(id = null,nick = "Vectoun"),
-                participants = listOf(),
-                party = Party(id = 2, name = "Tyckouni")
-            ))
-
-            adapter.submitList(events)
             recycler_view.adapter = adapter
         }
     }
 
     private fun loadEventsSuccess(events: List<Event>) {
         Log.i(TAG, "Loaded future events: ${events}.")
+        adapter.submitList(events)
     }
 
     private fun loadEventsError(error: Throwable) {
