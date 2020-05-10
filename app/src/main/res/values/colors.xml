@@ -10,6 +10,7 @@
     <color name="colorBackground">#121212</color>
     <color name="onBackground">#FFFFFF</color>
 
+    <color name="toolBarBg">#1F1F1F</color>
     <color name="high_emphasis">#DEFFFFFF</color>
     <color name="medium_emphasis">#99FFFFFF</color>
     <color name="disabled">#61FFFFFF</color>
@@ -20,4 +21,6 @@
     <color name="colorError">#CF6679</color>
     <color name="colorOnError">#000000</color>
     <color name="dialogColor">#FF303030</color>
+
+    <color name="colorGreyOutline">#888888</color>
 </resources>

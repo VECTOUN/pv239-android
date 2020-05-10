@@ -28,7 +28,6 @@ import cz.muni.pv239.android.ui.activities.UserActivity
 
 class NickNameFragment : Fragment() {
 
-
     private var compositeDisposable: CompositeDisposable? = null
     private val userRepository: UserRepository by lazy {
         Retrofit.Builder()
@@ -61,14 +60,11 @@ class NickNameFragment : Fragment() {
             }
         })
 
-
         compositeDisposable = CompositeDisposable()
 
         view.confirm_button.setOnClickListener {
             createUser()
         }
-
-
 
         return view
     }

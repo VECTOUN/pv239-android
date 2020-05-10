@@ -3,7 +3,7 @@ package cz.muni.pv239.android.model
 import java.util.Date
 
 data class Event (
-    val id: Long,
+    val id: Long?,
     val name: String,
     val description: String,
     val capacity: Int?,

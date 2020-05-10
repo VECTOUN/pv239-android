@@ -11,6 +11,7 @@ import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.UserRepository
+import cz.muni.pv239.android.util.PrefManager
 
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
