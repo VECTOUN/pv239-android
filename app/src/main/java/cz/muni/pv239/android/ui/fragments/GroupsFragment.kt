@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.UserRepository
+import cz.muni.pv239.android.ui.adapters.GroupAdapter
 import cz.muni.pv239.android.util.PrefManager
 
 import cz.muni.pv239.android.util.getHttpClient
@@ -24,6 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class GroupsFragment : Fragment() {
 
+    private val adapter = GroupAdapter()
+    private val prefManager: PrefManager? by lazy { PrefManager(context) }
     private var compositeDisposable: CompositeDisposable? = null
     private val userRepository: UserRepository by lazy {
         Retrofit.Builder()
@@ -64,14 +68,17 @@ class GroupsFragment : Fragment() {
 
         }
 
-        return view
+        return view.apply{
+            group_recycler_view.layoutManager = LinearLayoutManager(context)
+            group_recycler_view.adapter = adapter
+        }
     }
 
     private fun getInfoSuccess(user: User) {
         Log.i(TAG, "Loaded user info: ${user}.")
 
         compositeDisposable?.add(
-            userRepository.getOwnedParties(user.id)
+            userRepository.getParties(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::getPartiesSuccess, this::getPartiesError)
@@ -85,6 +92,7 @@ class GroupsFragment : Fragment() {
 
     private fun getPartiesSuccess(parties: List<Party>) {
         Log.i(TAG, "Loaded users parties: ${parties}.")
+        adapter.submitList(parties)
     }
 
     private fun getPartiesError(error: Throwable) {
