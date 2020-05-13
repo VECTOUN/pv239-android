@@ -35,11 +35,18 @@ class CreateGroupDialogFragment : DialogFragment() {
             .build().create(GroupRepository::class.java)
     }
 
+    private var onGroupCreatedListener: OnGroupCreatedListener? = null
+
     companion object {
         private const val TAG = "CreateGroupFragment"
 
         @JvmStatic
         fun newInstance() = CreateGroupDialogFragment()
+
+        @JvmStatic
+        fun newInstance(listener: OnGroupCreatedListener) = CreateGroupDialogFragment().apply {
+            onGroupCreatedListener = listener
+        }
     }
 
 
@@ -104,19 +111,18 @@ class CreateGroupDialogFragment : DialogFragment() {
 
     private fun createGroupSuccess(id: Long) {
         Log.i(TAG, "Created group with id: $id")
-
-        Toast.makeText(activity?.applicationContext, "Created group with id: $id", Toast.LENGTH_LONG)
-            .show()
-
         dismiss()
+        onGroupCreatedListener?.groupCreated()
     }
 
     private fun createGroupError(error: Throwable) {
-        Log.e(TAG, "Failed to create group.", error)
-
-        Toast.makeText(activity?.applicationContext, "Failed to create group", Toast.LENGTH_LONG)
-            .show()
-
+        Log.e(TAG, R.string.create_group_fail.toString(), error)
         dismiss()
+        onGroupCreatedListener?.groupCreateFailed()
+    }
+
+    interface OnGroupCreatedListener {
+        fun groupCreated()
+        fun groupCreateFailed()
     }
 }
