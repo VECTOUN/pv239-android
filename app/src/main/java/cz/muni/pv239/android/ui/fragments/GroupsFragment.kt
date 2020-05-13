@@ -21,6 +21,7 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_create_group.view.*
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -57,10 +58,26 @@ class GroupsFragment : Fragment() {
         loadGroups()
 
         view.add_group_button.setOnClickListener{
-            val dialogFragment = CreateGroupDialogFragment()
+            val dialogFragment = CreateGroupDialogFragment
+                .newInstance(object: CreateGroupDialogFragment.OnGroupCreatedListener{
+                    override fun groupCreated() {
+                        Snackbar
+                            .make(view.add_group_button, R.string.create_group_success, Snackbar.LENGTH_LONG)
+                            .show()
+                        loadGroups()
+                    }
+
+                    override fun groupCreateFailed() {
+                        Snackbar
+                            .make(view.add_group_button, R.string.create_group_fail, Snackbar.LENGTH_LONG)
+                            .show()
+                    }
+
+
+                })
+
             activity?.supportFragmentManager?.let { fragmentManager ->
                 dialogFragment.show(fragmentManager, "CreateGroupFragment")}
-
         }
 
         view.join_group_button.setOnClickListener{
@@ -89,6 +106,7 @@ class GroupsFragment : Fragment() {
             group_recycler_view.adapter = adapter
         }
     }
+
 
     private fun loadGroups() {
         compositeDisposable?.add(

@@ -14,6 +14,8 @@
     <string name="group_name_edit_hint">Name your group</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
+    <string name="create_group_success">Created group</string>
+    <string name="create_group_fail">Failed to create group</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
