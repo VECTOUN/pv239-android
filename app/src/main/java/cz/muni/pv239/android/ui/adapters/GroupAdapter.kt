@@ -32,7 +32,6 @@ class GroupAdapter: RecyclerView.Adapter<GroupAdapter.GroupViewHolder>(){
         notifyDataSetChanged()
     }
 
-
     inner class GroupViewHolder(private val view: View): RecyclerView.ViewHolder(view){
         fun bind(group: Party){
             view.group_name_label.text = group.name

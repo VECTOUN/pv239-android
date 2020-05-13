@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Event
-import cz.muni.pv239.android.model.Party
-import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.EventRepository
 import cz.muni.pv239.android.ui.adapters.EventAdapter
 import cz.muni.pv239.android.util.PrefManager
@@ -22,11 +20,10 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_groups.*
 import kotlinx.android.synthetic.main.fragment_home_page.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.LocalDateTime
-import java.util.*
 
 class HomePageFragment : Fragment() {
 
@@ -50,6 +47,9 @@ class HomePageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        retainInstance = true
+
         compositeDisposable = CompositeDisposable()
 
         requireActivity().onBackPressedDispatcher.addCallback(this,
@@ -70,26 +70,42 @@ class HomePageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        retainInstance = true
+
+        val view = inflater.inflate(R.layout.fragment_home_page, container, false).apply {
+            recycler_view.layoutManager = LinearLayoutManager(context)
+
+            recycler_view.adapter = adapter
+        }
+        if (savedInstanceState == null) {
+            view.swipeContainer.isRefreshing = true
+            loadEvents()
+        }
+
+        view.swipeContainer.setOnRefreshListener {
+            loadEvents()
+        }
+
+        return view
+    }
+
+    private fun loadEvents() {
         compositeDisposable?.add(
             eventRepository.getFutureEvents(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::loadEventsSuccess, this::loadEventsError)
         )
-
-        return inflater.inflate(R.layout.fragment_home_page, container, false).apply {
-            recycler_view.layoutManager = LinearLayoutManager(context)
-
-            recycler_view.adapter = adapter
-        }
     }
 
     private fun loadEventsSuccess(events: List<Event>) {
         Log.i(TAG, "Loaded future events: ${events}.")
+        swipeContainer.isRefreshing = false
         adapter.submitList(events)
     }
 
     private fun loadEventsError(error: Throwable) {
+        swipeContainer.isRefreshing = false
         Log.e(TAG, "Failed to load future events.", error)
     }
 
