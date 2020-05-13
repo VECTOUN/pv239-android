@@ -2,10 +2,9 @@ package cz.muni.pv239.android.ui.activities
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.repository.UserRepository
@@ -66,18 +65,13 @@ class SetUpActivity : AppCompatActivity() {
     private fun userExistsSuccess(userExists: Boolean) {
         Log.d(TAG, "Response: $userExists")
 
-        // TODO
         // user exists, go to the next activity
         if (userExists) {
-            Toast.makeText(applicationContext, "User already exists", Toast.LENGTH_LONG)
-                .show()
-
             startActivity(
                 UserActivity.newIntent(
                     this
                 )
             )
-
         } else {
             showNickSelectFragment()
         }
@@ -92,6 +86,5 @@ class SetUpActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
-
     }
 }

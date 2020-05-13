@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Party
@@ -53,13 +54,7 @@ class GroupsFragment : Fragment() {
 
         compositeDisposable = CompositeDisposable()
 
-        compositeDisposable?.add(
-            userRepository.getUserInfo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::getInfoSuccess, this::getInfoError)
-        )
-
+        loadGroups()
 
         view.add_group_button.setOnClickListener{
             val dialogFragment = CreateGroupDialogFragment()
@@ -68,10 +63,40 @@ class GroupsFragment : Fragment() {
 
         }
 
+        view.join_group_button.setOnClickListener{
+            val dialogFragment = JoinGroupDialogFragment
+                .newInstance(object : JoinGroupDialogFragment.OnGroupJoinedListener {
+                    override fun groupJoined() {
+                        Snackbar
+                            .make(view.join_group_button, R.string.join_group_success, Snackbar.LENGTH_LONG)
+                            .show()
+                        loadGroups()
+                    }
+
+                    override fun groupJoinFailed() {
+                        Snackbar
+                            .make(view.join_group_button, R.string.join_group_failed, Snackbar.LENGTH_LONG)
+                            .show()
+                    }
+                })
+            activity?.supportFragmentManager?.let {fragmentManager ->
+                dialogFragment.show(fragmentManager, "JoinGroupFragment")
+            }
+        }
+
         return view.apply{
             group_recycler_view.layoutManager = LinearLayoutManager(context)
             group_recycler_view.adapter = adapter
         }
+    }
+
+    private fun loadGroups() {
+        compositeDisposable?.add(
+            userRepository.getUserInfo()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::getInfoSuccess, this::getInfoError)
+        )
     }
 
     private fun getInfoSuccess(user: User) {

@@ -24,5 +24,10 @@
     <string name="date_form">Date</string>
     <string name="form_party">Party</string>
     <string name="party_select_preview">%s #%d</string>
+    <string name="join_group">Join group</string>
+    <string name="group_id_edit_hint">Group id</string>
+    <string name="join">join</string>
+    <string name="join_group_success">Successfully joined group.</string>
+    <string name="join_group_failed">Failed to join group.</string>
 
 </resources>
