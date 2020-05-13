@@ -57,7 +57,6 @@ class GroupsFragment : Fragment() {
 
         loadGroups()
 
-
         view.add_group_button.setOnClickListener{
             val dialogFragment = CreateGroupDialogFragment
                 .newInstance(object: CreateGroupDialogFragment.OnGroupCreatedListener{
@@ -79,6 +78,27 @@ class GroupsFragment : Fragment() {
 
             activity?.supportFragmentManager?.let { fragmentManager ->
                 dialogFragment.show(fragmentManager, "CreateGroupFragment")}
+        }
+
+        view.join_group_button.setOnClickListener{
+            val dialogFragment = JoinGroupDialogFragment
+                .newInstance(object : JoinGroupDialogFragment.OnGroupJoinedListener {
+                    override fun groupJoined() {
+                        Snackbar
+                            .make(view.join_group_button, R.string.join_group_success, Snackbar.LENGTH_LONG)
+                            .show()
+                        loadGroups()
+                    }
+
+                    override fun groupJoinFailed() {
+                        Snackbar
+                            .make(view.join_group_button, R.string.join_group_failed, Snackbar.LENGTH_LONG)
+                            .show()
+                    }
+                })
+            activity?.supportFragmentManager?.let {fragmentManager ->
+                dialogFragment.show(fragmentManager, "JoinGroupFragment")
+            }
         }
 
         return view.apply{

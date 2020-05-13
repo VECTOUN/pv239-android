@@ -7,12 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.UserRepository
+import cz.muni.pv239.android.ui.activities.UserActivity
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -22,8 +23,6 @@ import kotlinx.android.synthetic.main.fragment_nick_name.*
 import kotlinx.android.synthetic.main.fragment_nick_name.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import cz.muni.pv239.android.ui.activities.UserActivity
-
 
 
 class NickNameFragment : Fragment() {
@@ -89,22 +88,17 @@ class NickNameFragment : Fragment() {
     private fun createUserSuccess(id: Long) {
         Log.i(TAG, "Created user with id: $id")
 
-        Toast.makeText(activity?.applicationContext, "Created user with id: $id", Toast.LENGTH_LONG)
-            .show()
-
         context?.let {context ->
             startActivity(
                 UserActivity.newIntent(context)
             )
         }
-
-
     }
 
     private fun createUserError(error: Throwable) {
         Log.e(TAG, "Failed to create user.", error)
 
-        Toast.makeText(activity?.applicationContext, "Failed to create user", Toast.LENGTH_LONG)
+        Snackbar.make(view!!.confirm_button, "Failed to create user.", Snackbar.LENGTH_LONG)
             .show()
     }
 }

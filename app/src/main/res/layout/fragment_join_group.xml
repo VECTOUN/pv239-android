@@ -16,7 +16,7 @@
         android:id="@+id/create_group_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_group"
+        android:text="@string/join_group"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
@@ -27,13 +27,14 @@
 
 
     <EditText
-        android:id="@+id/edit_group_name"
+        android:id="@+id/edit_group_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="@string/group_name_edit_hint"
+        android:importantForAutofill="no"
+        android:hint="@string/group_id_edit_hint"
         app:layout_constraintTop_toBottomOf="@id/create_group_title"
-        />
+        android:inputType="number" />
 
     <Button
         android:id="@+id/group_cancel_button"
@@ -41,7 +42,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_group_name"
+        app:layout_constraintTop_toBottomOf="@id/edit_group_id"
         android:layout_marginVertical="8dp"
         android:layout_marginStart="16dp"
         android:backgroundTint="@color/dialogColor"
@@ -51,17 +52,17 @@
         />
 
     <Button
-        android:id="@+id/group_create_button"
+        android:id="@+id/group_join_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_group_name"
+        app:layout_constraintTop_toBottomOf="@id/edit_group_id"
         android:layout_marginEnd="16dp"
         android:layout_marginVertical="8dp"
         android:backgroundTint="@color/dialogColor"
         android:textColor="@color/colorPrimary"
-        android:text="@string/create"
+        android:text="@string/join"
         style="?android:attr/borderlessButtonStyle"
         />
 
