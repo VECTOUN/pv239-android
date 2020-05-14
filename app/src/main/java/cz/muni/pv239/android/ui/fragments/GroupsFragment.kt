@@ -11,17 +11,15 @@ import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Party
-import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.UserRepository
 import cz.muni.pv239.android.ui.adapters.GroupAdapter
 import cz.muni.pv239.android.util.PrefManager
-
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_group.view.*
+import kotlinx.android.synthetic.main.fragment_groups.*
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -53,9 +51,18 @@ class GroupsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_groups, container, false)
 
-        compositeDisposable = CompositeDisposable()
+        retainInstance = true
 
-        loadGroups()
+        if (savedInstanceState == null) {
+            compositeDisposable = CompositeDisposable()
+
+            view.swipeContainer.isRefreshing = true
+            loadGroups()
+        }
+
+        view.swipeContainer.setOnRefreshListener {
+            loadGroups()
+        }
 
         view.add_group_button.setOnClickListener{
             val dialogFragment = CreateGroupDialogFragment
@@ -110,36 +117,22 @@ class GroupsFragment : Fragment() {
 
     private fun loadGroups() {
         compositeDisposable?.add(
-            userRepository.getUserInfo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::getInfoSuccess, this::getInfoError)
-        )
-    }
-
-    private fun getInfoSuccess(user: User) {
-        Log.i(TAG, "Loaded user info: ${user}.")
-
-        compositeDisposable?.add(
             userRepository.getParties(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::getPartiesSuccess, this::getPartiesError)
         )
-
-    }
-
-    private fun getInfoError(error: Throwable) {
-        Log.e(TAG, "Failed to load user info.", error)
     }
 
     private fun getPartiesSuccess(parties: List<Party>) {
         Log.i(TAG, "Loaded users parties: ${parties}.")
+        swipeContainer.isRefreshing = false
         adapter.submitList(parties)
     }
 
     private fun getPartiesError(error: Throwable) {
         Log.e(TAG, "Failed to load users parties.", error)
+        swipeContainer.isRefreshing = false
     }
 
     override fun onDestroy() {

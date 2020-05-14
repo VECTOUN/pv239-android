@@ -21,6 +21,7 @@ class EventsFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        retainInstance = true
         return inflater.inflate(R.layout.fragment_events, container, false).apply {
             this.create_event_button.setOnClickListener {
                 startActivity(CreateEventActivity.newIntent(context))

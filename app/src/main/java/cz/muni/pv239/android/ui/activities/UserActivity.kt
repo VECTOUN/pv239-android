@@ -46,14 +46,17 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_navigation)
 
-        compositeDisposable = CompositeDisposable()
-
-        compositeDisposable?.add(
-            userRepository.getUserInfo()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::userInfoSuccess, this::userInfoError)
-        )
+        if (savedInstanceState == null) {
+            compositeDisposable = CompositeDisposable()
+            compositeDisposable?.add(
+                userRepository.getUserInfo()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(this::userInfoSuccess, this::userInfoError)
+            )
+        } else {
+            initNav()
+        }
     }
 
     override fun onDestroy() {
@@ -68,6 +71,10 @@ class UserActivity : AppCompatActivity() {
             .replace(R.id.fragment_navigation_container, homePageFragment)
             .commit()
 
+        initNav()
+    }
+
+    private fun initNav() {
         val bottomNavigation : BottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigation.setOnNavigationItemSelectedListener {
             var selectedFragment : Fragment = HomePageFragment()
