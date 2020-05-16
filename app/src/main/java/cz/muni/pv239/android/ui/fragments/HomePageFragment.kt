@@ -9,10 +9,15 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Event
 import cz.muni.pv239.android.repository.EventRepository
+import cz.muni.pv239.android.ui.activities.EventDetailActivity
+import cz.muni.pv239.android.ui.activities.EventDetailActivity.Companion.INSPECT_EVENT
+import cz.muni.pv239.android.ui.activities.EventDetailActivity.Companion.JOINED_RESULT
+import cz.muni.pv239.android.ui.activities.EventDetailActivity.Companion.LEFT_RESULT
 import cz.muni.pv239.android.ui.adapters.EventAdapter
 import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
@@ -27,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class HomePageFragment : Fragment() {
 
-    private val adapter = EventAdapter()
+    private var adapter : EventAdapter? = null
     private var compositeDisposable: CompositeDisposable? = null
     private val prefManager: PrefManager? by lazy { PrefManager(context) }
     private val eventRepository: EventRepository by lazy {
@@ -74,6 +79,12 @@ class HomePageFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home_page, container, false).apply {
             recycler_view.layoutManager = LinearLayoutManager(context)
 
+            adapter = EventAdapter(prefManager?.userId!!)
+
+            adapter?.onItemClick = {event ->
+                startActivityForResult(EventDetailActivity.newIntent(context, event.id!!), INSPECT_EVENT)
+            }
+
             recycler_view.adapter = adapter
         }
         if (savedInstanceState == null) {
@@ -100,7 +111,7 @@ class HomePageFragment : Fragment() {
     private fun loadEventsSuccess(events: List<Event>) {
         Log.i(TAG, "Loaded future events: ${events}.")
         swipeContainer.isRefreshing = false
-        adapter.submitList(events)
+        adapter?.submitList(events)
     }
 
     private fun loadEventsError(error: Throwable) {
@@ -111,5 +122,28 @@ class HomePageFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable?.clear()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == INSPECT_EVENT) {
+            when (resultCode) {
+                JOINED_RESULT -> {
+                    Snackbar
+                        .make(view!!, R.string.event_joined, Snackbar.LENGTH_SHORT)
+                        .show()
+                    swipeContainer.isRefreshing = true
+                    loadEvents()
+                }
+                LEFT_RESULT -> {
+                    Snackbar
+                        .make(view!!, R.string.event_left, Snackbar.LENGTH_SHORT)
+                        .show()
+                    swipeContainer.isRefreshing = true
+                    loadEvents()
+                }
+            }
+        }
     }
 }

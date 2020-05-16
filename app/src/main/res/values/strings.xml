@@ -34,5 +34,16 @@
     <string name="no_groups_label">You are not a member of any group.</string>
     <string name="group_avatar">group avatar</string>
     <string name="event_avatar">Event avatar</string>
+    <string name="participants">Participants</string>
+    <string name="join_event">Join event</string>
+    <string name="leave_event">Leave event</string>
+    <string name="event_detail_date">Date: %s</string>
+    <string name="event_detail_time">Time: %s</string>
+    <string name="event_detail_owner">Owner: %s</string>
+    <string name="event_detail_participants">Participants: %d</string>
+    <string name="event_joined">Event joined.</string>
+    <string name="event_left">Event left.</string>
+    <string name="attending">attending</string>
+    <string name="description">Description</string>
 
 </resources>
