@@ -38,6 +38,7 @@ class HomePageFragment : Fragment() {
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(EventRepository::class.java)
     }
+
     companion object {
         private const val TAG = "HomePageFragment"
 
@@ -70,8 +71,6 @@ class HomePageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        retainInstance = true
-
         val view = inflater.inflate(R.layout.fragment_home_page, container, false).apply {
             recycler_view.layoutManager = LinearLayoutManager(context)
 
@@ -91,7 +90,7 @@ class HomePageFragment : Fragment() {
 
     private fun loadEvents() {
         compositeDisposable?.add(
-            eventRepository.getFutureEvents(prefManager?.userId!!)
+            eventRepository.getUserEvents(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::loadEventsSuccess, this::loadEventsError)

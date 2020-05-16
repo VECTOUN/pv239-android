@@ -13,6 +13,9 @@ interface EventRepository {
     @GET("user/{id}/future-events")
     fun getFutureEvents(@Path("id") userId : Long): Observable<List<Event>>
 
+    @GET("user/{id}/events")
+    fun getUserEvents(@Path("id") userId : Long): Observable<List<Event>>
+
     @PUT("event")
     fun createEvent(@Body event: CreateEventData) : Observable<Long>
 }
