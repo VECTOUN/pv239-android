@@ -14,8 +14,8 @@
     <string name="group_name_edit_hint">Name your group</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
-    <string name="create_group_success">Created group</string>
-    <string name="create_group_fail">Failed to create group</string>
+    <string name="create_group_success">Group created.</string>
+    <string name="create_group_fail">Failed to create group.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -31,5 +31,6 @@
     <string name="join">join</string>
     <string name="join_group_success">Successfully joined group.</string>
     <string name="join_group_failed">Failed to join group.</string>
+    <string name="no_groups_label">You are not a member of any group.</string>
 
 </resources>

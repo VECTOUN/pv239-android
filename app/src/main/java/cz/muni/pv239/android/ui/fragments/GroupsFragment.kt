@@ -20,6 +20,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_groups.*
+import kotlinx.android.synthetic.main.fragment_groups.swipeContainer
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -128,6 +129,11 @@ class GroupsFragment : Fragment() {
         Log.i(TAG, "Loaded users parties: ${parties}.")
         swipeContainer.isRefreshing = false
         adapter.submitList(parties)
+        if (parties.isEmpty()) {
+            no_groups_label.visibility = View.VISIBLE
+        } else {
+            no_groups_label.visibility = View.GONE
+        }
     }
 
     private fun getPartiesError(error: Throwable) {
