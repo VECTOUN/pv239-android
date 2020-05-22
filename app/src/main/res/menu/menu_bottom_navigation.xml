@@ -6,7 +6,7 @@
         android:title="@string/home"
         app:showAsAction="withText"/>
     <item android:id="@+id/menu_groups"
-        android:icon="@drawable/ic_star_black_24dp"
+        android:icon="@drawable/ic_people_black_24dp"
         android:title="@string/groups"
         app:showAsAction="withText"/>
     <item android:id="@+id/menu_events"

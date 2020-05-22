@@ -62,6 +62,7 @@ class NickNameFragment : Fragment() {
         compositeDisposable = CompositeDisposable()
 
         view.confirm_button.setOnClickListener {
+            view.confirm_button.isEnabled = false
             createUser()
         }
 
@@ -98,6 +99,7 @@ class NickNameFragment : Fragment() {
     private fun createUserError(error: Throwable) {
         Log.e(TAG, "Failed to create user.", error)
 
+        confirm_button.isEnabled = true
         Snackbar.make(view!!.confirm_button, "Failed to create user.", Snackbar.LENGTH_LONG)
             .show()
     }
