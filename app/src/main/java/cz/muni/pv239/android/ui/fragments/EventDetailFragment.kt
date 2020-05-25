@@ -55,6 +55,7 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         retainInstance = true
 
         val view = inflater.inflate(R.layout.fragment_event_detail, container, false)
@@ -71,6 +72,7 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
             compositeDisposable = CompositeDisposable()
             loadEvent()
         }
+        loadEvent()
 
         return view
     }

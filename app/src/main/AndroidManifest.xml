@@ -17,6 +17,9 @@
         <activity
             android:name=".ui.activities.CreateEventActivity"
             android:parentActivityName=".ui.activities.UserActivity" />
+        <activity
+            android:name=".ui.activities.GroupDetailActivity"
+            android:parentActivityName=".ui.activities.UserActivity"/>
         <activity android:name=".ui.activities.SetUpActivity" />
         <activity android:name=".ui.activities.UserActivity" />
         <activity android:name=".ui.activities.MainActivity">

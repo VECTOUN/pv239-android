@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.EventDetailActivity">
+    tools:context=".ui.activities.GroupDetailActivity">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -13,7 +14,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/toolBarBg"
         app:titleTextColor="@color/colorOnSurface"
-        app:title="Event detail"
+        app:title="Group detail"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,5 +25,7 @@
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="0dp"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
