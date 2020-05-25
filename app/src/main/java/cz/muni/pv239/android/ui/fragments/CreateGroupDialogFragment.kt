@@ -112,7 +112,7 @@ class CreateGroupDialogFragment : DialogFragment() {
     private fun createGroupSuccess(id: Long) {
         Log.i(TAG, "Created group with id: $id")
         dismiss()
-        onGroupCreatedListener?.groupCreated()
+        onGroupCreatedListener?.groupCreated(id)
     }
 
     private fun createGroupError(error: Throwable) {
@@ -122,7 +122,7 @@ class CreateGroupDialogFragment : DialogFragment() {
     }
 
     interface OnGroupCreatedListener {
-        fun groupCreated()
+        fun groupCreated(id: Long)
         fun groupCreateFailed()
     }
 }

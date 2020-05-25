@@ -22,7 +22,6 @@
     <string name="create_event_name">Event name</string>
     <string name="create_event_description">Description</string>
     <string name="select_party_label">Party:</string>
-    <string name="create_event_btn">Create event</string>
     <string name="date_form">Date</string>
     <string name="form_party">Party</string>
     <string name="party_select_preview">%s #%d</string>
@@ -49,5 +48,9 @@
     <string name="event_left">Event left.</string>
     <string name="attending">attending</string>
     <string name="description">Description</string>
+    <string name="create_event_btn">Create event</string>
+    <string name="create_event_party_label">Group: %s</string>
+    <string name="event_created">Event created.</string>
+    <string name="event_creation_failed">Failed to create event.</string>
 
 </resources>

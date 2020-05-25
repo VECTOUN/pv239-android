@@ -57,6 +57,13 @@ class HomePageFragment : Fragment() {
         retainInstance = true
 
         compositeDisposable = CompositeDisposable()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         requireActivity().onBackPressedDispatcher.addCallback(this,
             object : OnBackPressedCallback(true) {
@@ -68,13 +75,6 @@ class HomePageFragment : Fragment() {
                 }
             }
         )
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
 
         val view = inflater.inflate(R.layout.fragment_home_page, container, false).apply {
             recycler_view.layoutManager = LinearLayoutManager(context)

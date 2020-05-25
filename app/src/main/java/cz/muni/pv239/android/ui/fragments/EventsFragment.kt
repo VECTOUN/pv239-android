@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
@@ -28,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_groups.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class EventsFragment : Fragment(){
+class EventsFragment(private val nav: BottomNavigationView) : Fragment(){
 
     private var adapter : EventAdapter? = null
     private var compositeDisposable: CompositeDisposable? = null
@@ -46,14 +48,11 @@ class EventsFragment : Fragment(){
         private const val TAG = "EventsFragment"
 
         @JvmStatic
-        fun newInstance() = EventsFragment()
+        fun newInstance(nav : BottomNavigationView) = EventsFragment(nav)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        retainInstance = true
-
         compositeDisposable = CompositeDisposable()
     }
 
@@ -62,6 +61,14 @@ class EventsFragment : Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().onBackPressedDispatcher.addCallback(this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    nav.selectedItemId = R.id.menu_home
+                }
+            }
+        )
+
         retainInstance = true
         val view = inflater.inflate(R.layout.fragment_events, container, false).apply {
             recycler_view.layoutManager = LinearLayoutManager(context)
@@ -73,10 +80,6 @@ class EventsFragment : Fragment(){
             }
 
             recycler_view.adapter = adapter
-
-            this.create_event_button.setOnClickListener {
-                startActivity(CreateEventActivity.newIntent(context))
-            }
         }
 
         if (savedInstanceState == null) {
