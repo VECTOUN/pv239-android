@@ -97,7 +97,7 @@ class CreateGroupDialogFragment : DialogFragment() {
         Log.d(TAG, "createGroup called")
 
         compositeDisposable?.add(
-            groupRepository.createGroup(Party(null, name))
+            groupRepository.createGroup(Party(null, name, null, null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::createGroupSuccess, this::createGroupError)

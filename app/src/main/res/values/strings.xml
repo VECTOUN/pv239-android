@@ -28,9 +28,13 @@
     <string name="party_select_preview">%s #%d</string>
     <string name="join_group">Join group</string>
     <string name="group_id_edit_hint">Group id</string>
+    <string name="group_detail_members">Members: %s</string>
     <string name="join">join</string>
     <string name="join_group_success">Successfully joined group.</string>
     <string name="join_group_failed">Failed to join group.</string>
+    <string name="leave_group">Leave group</string>
+    <string name="group_left">Group left</string>
+    <string name="delete_group">Delete group</string>
     <string name="no_groups_label">You are not a member of any group.</string>
     <string name="group_avatar">group avatar</string>
     <string name="event_avatar">Event avatar</string>

@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.group_preview.view.*
 
 class GroupAdapter: RecyclerView.Adapter<GroupAdapter.GroupViewHolder>(){
 
+    var onItemClick: ((Party) -> Unit)? = null
     private val groups: MutableList<Party> = mutableListOf()
 
     override fun onCreateViewHolder(
@@ -33,6 +34,13 @@ class GroupAdapter: RecyclerView.Adapter<GroupAdapter.GroupViewHolder>(){
     }
 
     inner class GroupViewHolder(private val view: View): RecyclerView.ViewHolder(view){
+
+        init {
+            itemView.setOnClickListener{
+                onItemClick?.invoke(groups[adapterPosition])
+            }
+        }
+
         fun bind(group: Party){
             view.group_name_label.text = group.name
             view.group_id_label.text = "#".plus(group.id)

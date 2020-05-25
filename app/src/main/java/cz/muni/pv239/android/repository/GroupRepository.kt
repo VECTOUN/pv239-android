@@ -12,4 +12,10 @@ interface GroupRepository {
 
     @POST("party/{id}/join")
     fun joinGroup(@Path("id") id : Long) : Observable<Response<Void>>
+
+    @POST("party/{id}/leave")
+    fun leaveGroup(@Path("id") id : Long) : Observable<Response<Void>>
+
+    @GET("party/{id}")
+    fun getGroup(@Path("id") id: Long) : Observable<Party>
 }

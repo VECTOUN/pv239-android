@@ -43,6 +43,7 @@ class CreateEventFormFragment : Fragment() {
     private var timeSelected = false
     private var compositeDisposable: CompositeDisposable? = null
     private var parties: List<Party>? = null
+    private var partiesInfo: MutableList<String>? = mutableListOf()
 
     private val prefManager: PrefManager? by lazy { PrefManager(context) }
     private val userRepository: UserRepository by lazy {
@@ -71,7 +72,7 @@ class CreateEventFormFragment : Fragment() {
         compositeDisposable = CompositeDisposable()
 
         compositeDisposable?.add(
-            userRepository.getParties(prefManager?.userId)
+            userRepository.getMemberParties(prefManager?.userId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::getPartiesSuccess, this::getPartiesError)
@@ -135,6 +136,11 @@ class CreateEventFormFragment : Fragment() {
 
     private fun getPartiesSuccess(parties: List<Party>) {
         Log.i(TAG, "Loaded users parties: ${parties}.")
+
+        for (party in parties){
+            this.partiesInfo?.add(party.name + " #" + party.id)
+        }
+
         this.parties = parties
         initFormData()
     }
@@ -148,7 +154,7 @@ class CreateEventFormFragment : Fragment() {
 
         context?.let { context ->
             view!!.form_items.party_text_field
-                ?.setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, parties!!))
+                ?.setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, partiesInfo!!))
             view!!.party_text_field.setOnItemClickListener { _, _, position, _ ->
                 selectedParty = parties!![position]
                 Log.d(TAG, "Selected party: $selectedParty")

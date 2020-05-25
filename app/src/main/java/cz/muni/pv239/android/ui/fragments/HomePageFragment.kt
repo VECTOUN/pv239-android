@@ -96,6 +96,8 @@ class HomePageFragment : Fragment() {
             loadEvents()
         }
 
+        loadEvents()
+
         return view
     }
 

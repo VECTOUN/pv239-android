@@ -1,5 +1,6 @@
 package cz.muni.pv239.android.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,8 @@ import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.repository.UserRepository
+import cz.muni.pv239.android.ui.activities.GroupDetailActivity
+import cz.muni.pv239.android.ui.activities.GroupDetailActivity.Companion.INSPECT_GROUP
 import cz.muni.pv239.android.ui.adapters.GroupAdapter
 import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
@@ -22,12 +25,13 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_groups.*
 import kotlinx.android.synthetic.main.fragment_groups.swipeContainer
 import kotlinx.android.synthetic.main.fragment_groups.view.*
+import kotlinx.android.synthetic.main.fragment_groups.view.swipeContainer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class GroupsFragment : Fragment() {
 
-    private val adapter = GroupAdapter()
+    private var adapter: GroupAdapter? = null
     private val prefManager: PrefManager? by lazy { PrefManager(context) }
     private var compositeDisposable: CompositeDisposable? = null
     private val userRepository: UserRepository by lazy {
@@ -50,9 +54,20 @@ class GroupsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_groups, container, false)
-
         retainInstance = true
+        val view = inflater.inflate(R.layout.fragment_groups, container, false).apply{
+            group_recycler_view.layoutManager = LinearLayoutManager(context)
+
+            adapter = GroupAdapter()
+
+            adapter?.onItemClick = { party ->
+                startActivityForResult(
+                    GroupDetailActivity.newIntent(context, party.id!!), INSPECT_GROUP)
+            }
+
+            group_recycler_view.adapter = adapter
+        }
+
 
         if (savedInstanceState == null) {
             compositeDisposable = CompositeDisposable()
@@ -64,6 +79,8 @@ class GroupsFragment : Fragment() {
         view.swipeContainer.setOnRefreshListener {
             loadGroups()
         }
+
+        loadGroups()
 
         view.add_group_button.setOnClickListener{
             val dialogFragment = CreateGroupDialogFragment
@@ -109,16 +126,13 @@ class GroupsFragment : Fragment() {
             }
         }
 
-        return view.apply{
-            group_recycler_view.layoutManager = LinearLayoutManager(context)
-            group_recycler_view.adapter = adapter
-        }
+        return view
     }
 
 
     private fun loadGroups() {
         compositeDisposable?.add(
-            userRepository.getParties(prefManager?.userId!!)
+            userRepository.getMemberParties(prefManager?.userId!!)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::getPartiesSuccess, this::getPartiesError)
@@ -128,7 +142,7 @@ class GroupsFragment : Fragment() {
     private fun getPartiesSuccess(parties: List<Party>) {
         Log.i(TAG, "Loaded users parties: ${parties}.")
         swipeContainer.isRefreshing = false
-        adapter.submitList(parties)
+        adapter?.submitList(parties)
         if (parties.isEmpty()) {
             no_groups_label.visibility = View.VISIBLE
         } else {
@@ -139,6 +153,23 @@ class GroupsFragment : Fragment() {
     private fun getPartiesError(error: Throwable) {
         Log.e(TAG, "Failed to load users parties.", error)
         swipeContainer.isRefreshing = false
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == INSPECT_GROUP) {
+            when (resultCode) {
+                GroupDetailActivity.LEFT_RESULT -> {
+                    Snackbar
+                        .make(view!!, R.string.group_left, Snackbar.LENGTH_SHORT)
+                        .show()
+                    swipeContainer.isRefreshing = true
+                    loadGroups()
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

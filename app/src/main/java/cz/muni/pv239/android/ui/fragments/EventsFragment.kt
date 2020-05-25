@@ -88,6 +88,8 @@ class EventsFragment : Fragment(){
             loadEvents()
         }
 
+        loadEvents()
+
         return view
     }
 
