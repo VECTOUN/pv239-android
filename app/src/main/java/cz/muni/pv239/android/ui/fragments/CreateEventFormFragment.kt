@@ -1,5 +1,6 @@
 package cz.muni.pv239.android.ui.fragments
 
+import android.app.Activity
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.Editable
@@ -8,10 +9,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.extensions.toISO
 import cz.muni.pv239.android.extensions.toPresentableDate
@@ -20,40 +21,28 @@ import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.CreateEventData
 import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.repository.EventRepository
-import cz.muni.pv239.android.repository.UserRepository
-import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.create_event_form_items.view.*
+import kotlinx.android.synthetic.main.fragment_create_event_form.*
 import kotlinx.android.synthetic.main.fragment_create_event_form.view.*
+import kotlinx.android.synthetic.main.fragment_create_event_form.view.confirm_button
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
-class CreateEventFormFragment : Fragment() {
+class CreateEventFormFragment(private val partyId: Long, private val partyName: String) : Fragment() {
 
     private val selectedDateTime = Calendar.getInstance()
-    private var selectedParty : Party? = null
 
     private var dateSelected = false
     private var timeSelected = false
     private var compositeDisposable: CompositeDisposable? = null
-    private var parties: List<Party>? = null
-    private var partiesInfo: MutableList<String>? = mutableListOf()
 
-    private val prefManager: PrefManager? by lazy { PrefManager(context) }
-    private val userRepository: UserRepository by lazy {
-        Retrofit.Builder()
-            .client(getHttpClient(activity?.applicationContext))
-            .baseUrl(API_ROOT)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(UserRepository::class.java)
-    }
     private val eventRepository: EventRepository by lazy {
         Retrofit.Builder()
             .client(getHttpClient(activity?.applicationContext))
@@ -71,14 +60,10 @@ class CreateEventFormFragment : Fragment() {
 
         compositeDisposable = CompositeDisposable()
 
-        compositeDisposable?.add(
-            userRepository.getMemberParties(prefManager?.userId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::getPartiesSuccess, this::getPartiesError)
-        )
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_create_event_form, container, false)
+
+        view.party_label.text = getString(R.string.create_event_party_label, partyName)
 
         view.date_layout.setEndIconOnClickListener {
 
@@ -124,6 +109,24 @@ class CreateEventFormFragment : Fragment() {
             )
         }
 
+        view.time_layout.setEndIconOnClickListener {
+            TimePickerDialog(
+                context,
+                TimePickerDialog.OnTimeSetListener {_, hourOfDay, minute ->
+                    selectedDateTime.apply {
+                        set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        set(Calendar.MINUTE, minute)
+                    }
+                    view!!.time_view.setText(selectedDateTime.timeInMillis.toPresentableTime())
+                    timeSelected = true
+                    checkButton()
+                },
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                Calendar.getInstance().get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+
         return view
     }
 
@@ -131,57 +134,11 @@ class CreateEventFormFragment : Fragment() {
         private const val TAG = "CreateEventFormFragment"
 
         @JvmStatic
-        fun newInstance() = CreateEventFormFragment()
-    }
-
-    private fun getPartiesSuccess(parties: List<Party>) {
-        Log.i(TAG, "Loaded users parties: ${parties}.")
-
-        for (party in parties){
-            this.partiesInfo?.add(party.name + " #" + party.id)
-        }
-
-        this.parties = parties
-        initFormData()
-    }
-
-    private fun getPartiesError(error: Throwable) {
-        Log.e(TAG, "Failed to load users parties.", error)
-    }
-
-    private fun initFormData() {
-        Log.d(TAG, "Parties: $parties")
-
-        context?.let { context ->
-            view!!.form_items.party_text_field
-                ?.setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, partiesInfo!!))
-            view!!.party_text_field.setOnItemClickListener { _, _, position, _ ->
-                selectedParty = parties!![position]
-                Log.d(TAG, "Selected party: $selectedParty")
-                checkButton()
-            }
-            view!!.time_layout.setEndIconOnClickListener {
-                TimePickerDialog(
-                    context,
-                    TimePickerDialog.OnTimeSetListener {_, hourOfDay, minute ->
-                        selectedDateTime.apply {
-                            set(Calendar.HOUR_OF_DAY, hourOfDay)
-                            set(Calendar.MINUTE, minute)
-                        }
-                        view!!.time_view.setText(selectedDateTime.timeInMillis.toPresentableTime())
-                        timeSelected = true
-                        checkButton()
-                    },
-                    Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                    Calendar.getInstance().get(Calendar.MINUTE),
-                    true
-                ).show()
-            }
-        }
+        fun newInstance(partyId: Long, partyName: String) = CreateEventFormFragment(partyId, partyName)
     }
 
     private fun checkButton() {
-        view!!.confirm_button.isEnabled = dateSelected && timeSelected && selectedParty != null &&
+        view!!.confirm_button.isEnabled = dateSelected && timeSelected &&
                 view?.name_edit?.text?.trim()!!.isNotEmpty()
     }
 
@@ -190,14 +147,11 @@ class CreateEventFormFragment : Fragment() {
         description = view!!.description_edit.text.toString(),
         capacity = null,
         dateTime = selectedDateTime.timeInMillis.toISO(),
-        partyId = selectedParty!!.id!!
+        partyId = partyId
     )
 
     private fun partyCreatedSuccess(id : Long) {
-        Toast
-            .makeText(context, "Event created.", Toast.LENGTH_SHORT)
-            .show()
-
+        activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
 
@@ -206,8 +160,8 @@ class CreateEventFormFragment : Fragment() {
 
         Log.e(TAG, "Failed to create event.", error)
 
-        Toast
-            .makeText(context, "Failed to create event.", Toast.LENGTH_LONG)
+        Snackbar
+            .make(confirm_button, R.string.event_creation_failed, Snackbar.LENGTH_LONG)
             .show()
     }
 }

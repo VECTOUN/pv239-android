@@ -79,11 +79,11 @@ class UserActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener {
             var selectedFragment : Fragment = HomePageFragment()
             when(it.itemId) {
-                R.id.menu_home -> {selectedFragment = HomePageFragment()}
+                R.id.menu_home -> {selectedFragment = HomePageFragment.newInstance()}
 
-                R.id.menu_groups -> {selectedFragment = GroupsFragment()}
+                R.id.menu_groups -> {selectedFragment = GroupsFragment.newInstance(bottomNavigation)}
 
-                R.id.menu_events -> {selectedFragment = EventsFragment()}
+                R.id.menu_events -> {selectedFragment = EventsFragment.newInstance(bottomNavigation)}
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_navigation_container, selectedFragment)

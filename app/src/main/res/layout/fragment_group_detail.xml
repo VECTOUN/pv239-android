@@ -34,7 +34,6 @@
             android:id="@+id/owner_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             style="@style/TextAppearance.AppCompat.Subhead"
             app:layout_constraintStart_toStartOf="@id/group_name"
             app:layout_constraintTop_toBottomOf="@id/group_name"
@@ -58,8 +57,16 @@
             app:layout_constraintTop_toBottomOf="@id/members_label"
             tools:text="Vectoun \nLomitko17\nPavel"/>
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_event_button"
+            android:layout_width="match_parent"
+            android:text="@string/create_event_btn"
+            app:layout_constraintBottom_toTopOf="@id/leave_button"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/leave_button"
             android:text="@string/leave_group"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/colorError"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

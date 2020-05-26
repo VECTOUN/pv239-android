@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.model.API_ROOT
@@ -29,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_groups.view.swipeContainer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class GroupsFragment : Fragment() {
+class GroupsFragment(private val nav: BottomNavigationView) : Fragment() {
 
     private var adapter: GroupAdapter? = null
     private val prefManager: PrefManager? by lazy { PrefManager(context) }
@@ -46,7 +48,7 @@ class GroupsFragment : Fragment() {
     companion object {
         private const val TAG = "GroupsFragment"
         @JvmStatic
-        fun newInstance() = GroupsFragment()
+        fun newInstance(nav : BottomNavigationView) = GroupsFragment(nav)
     }
 
     override fun onCreateView(
@@ -54,6 +56,15 @@ class GroupsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        requireActivity().onBackPressedDispatcher.addCallback(this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    nav.selectedItemId = R.id.menu_home
+                }
+            }
+        )
+
         retainInstance = true
         val view = inflater.inflate(R.layout.fragment_groups, container, false).apply{
             group_recycler_view.layoutManager = LinearLayoutManager(context)
@@ -68,16 +79,14 @@ class GroupsFragment : Fragment() {
             group_recycler_view.adapter = adapter
         }
 
+        view.swipeContainer.setOnRefreshListener {
+            loadGroups()
+        }
 
         if (savedInstanceState == null) {
             compositeDisposable = CompositeDisposable()
 
             view.swipeContainer.isRefreshing = true
-            loadGroups()
-        }
-
-        view.swipeContainer.setOnRefreshListener {
-            loadGroups()
         }
 
         loadGroups()
@@ -85,7 +94,7 @@ class GroupsFragment : Fragment() {
         view.add_group_button.setOnClickListener{
             val dialogFragment = CreateGroupDialogFragment
                 .newInstance(object: CreateGroupDialogFragment.OnGroupCreatedListener{
-                    override fun groupCreated() {
+                    override fun groupCreated(id: Long) {
                         Snackbar
                             .make(view.add_group_button, R.string.create_group_success, Snackbar.LENGTH_LONG)
                             .show()
@@ -97,8 +106,6 @@ class GroupsFragment : Fragment() {
                             .make(view.add_group_button, R.string.create_group_fail, Snackbar.LENGTH_LONG)
                             .show()
                     }
-
-
                 })
 
             activity?.supportFragmentManager?.let { fragmentManager ->
@@ -176,5 +183,4 @@ class GroupsFragment : Fragment() {
         super.onDestroy()
         compositeDisposable?.clear()
     }
-
 }
