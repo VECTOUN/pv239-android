@@ -10,7 +10,7 @@ import cz.muni.pv239.android.ui.fragments.EventDetailFragment
 class EventDetailActivity : AppCompatActivity() {
 
     companion object {
-        private const val EVENT_ID_ARG = "arg_event_id"
+        const val EVENT_ID_ARG = "arg_event_id"
 
         const val INSPECT_EVENT = 1000
 

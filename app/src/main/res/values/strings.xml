@@ -53,4 +53,7 @@
     <string name="event_created">Event created.</string>
     <string name="event_creation_failed">Failed to create event.</string>
 
+    <string name="channel_name">WannaPlay event reminder</string>
+    <string name="channel_description">Event reminder</string>
+
 </resources>

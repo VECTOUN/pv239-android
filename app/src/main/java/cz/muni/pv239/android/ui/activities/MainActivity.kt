@@ -1,9 +1,16 @@
 package cz.muni.pv239.android.ui.activities
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -31,7 +38,10 @@ class MainActivity : AppCompatActivity() {
 
     private val RC_SIGN_IN = 1001
 
+
+
     companion object {
+        const val CHANNEL_ID = "cz.muni.pv239.android"
         private const val TAG = "MainActivity"
     }
 
@@ -39,6 +49,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        createNotificationChannel()
+
 
         val accessToken = AccessToken.getCurrentAccessToken()
         val isLoggedInFb = accessToken != null && !accessToken.isExpired
@@ -119,4 +132,24 @@ class MainActivity : AppCompatActivity() {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
         }
     }
+
+
+    // It's safe to call this repeatedly because creating an existing notification channel performs no operation
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
 }
