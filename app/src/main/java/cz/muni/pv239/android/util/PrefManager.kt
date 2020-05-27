@@ -11,6 +11,7 @@ class PrefManager(context: Context?) {
         private const val USED_EXT_SOURCE = "used_ext_source"
         private const val ACCESS_TOKEN = "access_token"
         private const val USER_ID = "user_id"
+        private const val USER_NAME = "user_name"
     }
 
     private val shared: SharedPreferences? =
@@ -27,4 +28,8 @@ class PrefManager(context: Context?) {
     var userId: Long
         get() = shared?.getLong(USER_ID, -1) ?: -1
         set(value) = shared?.edit()?.putLong(USER_ID, value)!!.apply()
+
+    var userName: String
+        get() = shared?.getString(USER_NAME, "") ?: ""
+        set(value) = shared?.edit()?.putString(USER_NAME, value)!!.apply()
 }

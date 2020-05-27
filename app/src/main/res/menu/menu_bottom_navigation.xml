@@ -13,4 +13,8 @@
         android:icon="@drawable/ic_event_black_24dp"
         android:title="@string/events"
         app:showAsAction="withText"/>
+    <item android:id="@+id/menu_profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="@string/profile"
+        app:showAsAction="withText"/>
 </menu>

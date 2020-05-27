@@ -14,6 +14,7 @@ import cz.muni.pv239.android.repository.UserRepository
 import cz.muni.pv239.android.ui.fragments.EventsFragment
 import cz.muni.pv239.android.ui.fragments.GroupsFragment
 import cz.muni.pv239.android.ui.fragments.HomePageFragment
+import cz.muni.pv239.android.ui.fragments.ProfileFragment
 import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
@@ -84,7 +85,10 @@ class UserActivity : AppCompatActivity() {
                 R.id.menu_groups -> {selectedFragment = GroupsFragment.newInstance(bottomNavigation)}
 
                 R.id.menu_events -> {selectedFragment = EventsFragment.newInstance(bottomNavigation)}
+
+                R.id.menu_profile -> {selectedFragment = ProfileFragment.newInstance(bottomNavigation)}
             }
+
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_navigation_container, selectedFragment)
                 .commit()
@@ -95,6 +99,7 @@ class UserActivity : AppCompatActivity() {
 
     private fun userInfoSuccess(user: User) {
         prefManager?.userId = user.id!!
+        prefManager?.userName = user.nick
         Log.i(TAG, "Loaded user info.")
 
         showFragments()

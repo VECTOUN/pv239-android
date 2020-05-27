@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View.VISIBLE
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -43,10 +45,23 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val CHANNEL_ID = "cz.muni.pv239.android"
         private const val TAG = "MainActivity"
+
+        fun newIntent(context: Context) = Intent(context, MainActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        onBackPressedDispatcher.addCallback(this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val i = Intent(Intent.ACTION_MAIN)
+                    i.addCategory(Intent.CATEGORY_HOME)
+                    i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(i)
+                }
+            }
+        )
 
         setContentView(R.layout.activity_main)
 
@@ -77,10 +92,8 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(signInIntent, RC_SIGN_IN)}
 
         googleSignInClient.silentSignIn()
-            .addOnCompleteListener(
-                this
-            ) { task -> handleSignInResult(task) }
-
+            .addOnCompleteListener(this) { task -> handleSignInResult(task) }
+//            .addOn(this) { root_view.visibility = VISIBLE }
 
         LoginManager.getInstance().registerCallback(callbackManager,
             object : FacebookCallback<LoginResult> {
@@ -130,6 +143,7 @@ class MainActivity : AppCompatActivity() {
             onLoginSuccess()
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            root_view.visibility = VISIBLE
         }
     }
 
