@@ -25,8 +25,11 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_events.*
 import kotlinx.android.synthetic.main.fragment_events.view.*
+import kotlinx.android.synthetic.main.fragment_events.view.no_events_label
 import kotlinx.android.synthetic.main.fragment_groups.*
+import kotlinx.android.synthetic.main.fragment_groups.swipeContainer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -109,6 +112,11 @@ class EventsFragment(private val nav: BottomNavigationView) : Fragment(){
         Log.i(TAG, "Loaded future events: ${events}.")
         swipeContainer.isRefreshing = false
         adapter?.submitList(events)
+        if (events.isEmpty()) {
+            no_events_label.visibility = View.VISIBLE
+        } else {
+            no_events_label.visibility = View.GONE
+        }
     }
 
     private fun loadEventsError(error: Throwable) {
