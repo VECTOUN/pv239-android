@@ -58,5 +58,6 @@
 
     <string name="channel_name">WannaPlay event reminder</string>
     <string name="channel_description">Event reminder</string>
+    <string name="there_are_no_new_events_happening">There are no new events happening.</string>
 
 </resources>
