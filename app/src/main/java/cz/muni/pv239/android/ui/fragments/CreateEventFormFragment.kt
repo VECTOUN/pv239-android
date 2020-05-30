@@ -11,6 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import cz.muni.pv239.android.R
@@ -21,6 +24,7 @@ import cz.muni.pv239.android.model.API_ROOT
 import cz.muni.pv239.android.model.CreateEventData
 import cz.muni.pv239.android.model.Party
 import cz.muni.pv239.android.repository.EventRepository
+import cz.muni.pv239.android.util.NotifyWorker
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -33,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_create_event_form.view.confirm_bu
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class CreateEventFormFragment(private val partyId: Long, private val partyName: String) : Fragment() {
@@ -151,6 +156,21 @@ class CreateEventFormFragment(private val partyId: Long, private val partyName: 
     )
 
     private fun partyCreatedSuccess(id : Long) {
+
+        val inputData = workDataOf("arg_event_id" to  id,
+            "arg_event_name" to view!!.name_edit.text.toString())
+        val delay =  calculateDelay(selectedDateTime.timeInMillis)
+
+        val notifyWork = delay?.let {
+            OneTimeWorkRequestBuilder<NotifyWorker>()
+                .setInitialDelay(it, TimeUnit.MILLISECONDS)
+                .setInputData(inputData)
+                .addTag("$id")
+                .build()
+        }
+
+        notifyWork?.let { context?.let { it1 -> WorkManager.getInstance(it1).enqueue(it) } }
+
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
@@ -163,5 +183,18 @@ class CreateEventFormFragment(private val partyId: Long, private val partyName: 
         Snackbar
             .make(confirm_button, R.string.event_creation_failed, Snackbar.LENGTH_LONG)
             .show()
+    }
+
+    private fun calculateDelay(dateTime: Long?): Long? {
+        val currentTime = Calendar.getInstance().timeInMillis
+        val inAdvance = TimeUnit.MINUTES.toMillis(30)
+        val triggerTime = dateTime?.minus(inAdvance)
+        val delay = triggerTime?.minus(currentTime)
+
+
+        if (delay!! > 0){
+            return delay
+        }
+        return 0
     }
 }

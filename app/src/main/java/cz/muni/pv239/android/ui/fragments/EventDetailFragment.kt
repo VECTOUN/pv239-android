@@ -1,12 +1,13 @@
 package cz.muni.pv239.android.ui.fragments
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.work.*
 import cz.muni.pv239.android.R
 import cz.muni.pv239.android.extensions.toReadableDate
 import cz.muni.pv239.android.extensions.toReadableTime
@@ -16,6 +17,7 @@ import cz.muni.pv239.android.model.User
 import cz.muni.pv239.android.repository.EventRepository
 import cz.muni.pv239.android.ui.activities.EventDetailActivity.Companion.JOINED_RESULT
 import cz.muni.pv239.android.ui.activities.EventDetailActivity.Companion.LEFT_RESULT
+import cz.muni.pv239.android.util.NotifyWorker
 import cz.muni.pv239.android.util.PrefManager
 import cz.muni.pv239.android.util.getHttpClient
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
@@ -28,13 +30,15 @@ import kotlinx.android.synthetic.main.fragment_loading.progressBar
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.function.Consumer
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class EventDetailFragment(private val eventId: Long) : Fragment() {
 
     private var compositeDisposable: CompositeDisposable? = null
     private val prefManager: PrefManager? by lazy { PrefManager(context) }
+    private var event: Event? = null
 
     private val eventRepository: EventRepository by lazy {
         Retrofit.Builder()
@@ -93,6 +97,13 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
 
     private fun onLeaveEventResponse(response : Response<Void>) {
         if (response.isSuccessful) {
+            var status = context?.let { WorkManager.getInstance(it).getWorkInfosByTag("$eventId") }
+            Log.i(TAG, "Before: ${status?.get()}")
+
+            context?.let { WorkManager.getInstance(it).cancelAllWorkByTag("$eventId") }
+            status = context?.let { WorkManager.getInstance(it).getWorkInfosByTag("$eventId") }
+            Log.i(TAG, "After: ${status?.get()}")
+
             activity?.setResult(LEFT_RESULT)
             activity?.finish()
         }
@@ -100,6 +111,21 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
 
     private fun onJoinEventResponse(response : Response<Void>) {
         if (response.isSuccessful) {
+
+            val inputData = workDataOf("arg_event_id" to  eventId, "arg_event_name" to event?.name)
+            val delay =  calculateDelay(event?.dateTime)
+
+            val notifyWork = delay?.let {
+                OneTimeWorkRequestBuilder<NotifyWorker>()
+                    .setInitialDelay(it, TimeUnit.MILLISECONDS)
+                    .setInputData(inputData)
+                    .addTag("$eventId")
+                    .build()
+            }
+
+
+            notifyWork?.let { context?.let { it1 -> WorkManager.getInstance(it1).enqueue(it) } }
+
             activity?.setResult(JOINED_RESULT)
             activity?.finish()
         }
@@ -115,6 +141,11 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
     private fun onEventLoaded(event : Event) {
         event_detail.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+
+        this.event = event
+
+        var status = context?.let { WorkManager.getInstance(it).getWorkInfosByTag("$eventId") }
+        Log.i(TAG, "Load: ${status?.get()}")
 
         if (event.participants.map(User::id).contains(prefManager?.userId)) {
             leave_button.visibility = View.VISIBLE
@@ -143,8 +174,27 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
         progressBar.visibility = View.GONE
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable?.clear()
     }
+
+
+    private fun calculateDelay(dateTime: Date?): Long? {
+        val currentTime = Calendar.getInstance().timeInMillis
+        val inAdvance = TimeUnit.MINUTES.toMillis(30)
+        val triggerTime = dateTime?.time?.minus(inAdvance)
+        val delay = triggerTime?.minus(currentTime)
+
+        Log.i(TAG, "$delay")
+
+        if (delay!! > 0){
+            return delay
+        }
+        return 0
+    }
+
+
+
 }
