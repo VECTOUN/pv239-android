@@ -97,12 +97,7 @@ class EventDetailFragment(private val eventId: Long) : Fragment() {
 
     private fun onLeaveEventResponse(response : Response<Void>) {
         if (response.isSuccessful) {
-            var status = context?.let { WorkManager.getInstance(it).getWorkInfosByTag("$eventId") }
-            Log.i(TAG, "Before: ${status?.get()}")
-
             context?.let { WorkManager.getInstance(it).cancelAllWorkByTag("$eventId") }
-            status = context?.let { WorkManager.getInstance(it).getWorkInfosByTag("$eventId") }
-            Log.i(TAG, "After: ${status?.get()}")
 
             activity?.setResult(LEFT_RESULT)
             activity?.finish()
